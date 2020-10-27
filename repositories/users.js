@@ -41,16 +41,40 @@ class UsersRepository {
     const records = await this.getAll();
     return records.find(record => record.id === id);
   }
+
+  async delete(id) {
+    const records = await this.getAll();
+    const filterRecords = records.filter(record => record.id !== id);
+    await this.writeAll(filterRecords);
+  }
+
+  async update(id, attrs) {
+    const records = await this.getAll();
+    const record = records.find(record => record.id === id);
+
+    if (!record) {
+      throw new Error(`Record with id ${id} not found`);
+    }
+
+    Object.assign(record, attrs);
+    await this.writeAll(records);
+  }
 }
 
 const test = async () => {
   const repo = new UsersRepository('users.json');
 
-  // await repo.create({ email: 'test@test.com', password: 'password' });
+  // await repo.create({ email: 'test@test.com'});
 
-  const user = await repo.getOne('1213135df');
+  // const user = await repo.getOne('1213135df');
 
-  console.log(user);
+  // await repo.delete('71cfa2b5');
+
+  // await repo.update('f4ac24b2', { password: 'mypassword' } );
+
+  await repo.update('123123123', { password: 'mypassword' } );
+
+  // console.log(user);
 };
 
 test();
