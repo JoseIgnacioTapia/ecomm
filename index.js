@@ -6,9 +6,11 @@ const usersRepo = require('./repositories/users');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended:true }));
-app.use(cookieSession({
-  keys: ['hdvbhdfbadbvdsbvda']
-}));
+app.use(
+  cookieSession({
+    keys: ['hdvbhdfbadbvdsbvda']
+  })
+);
 
 app.get('/signup', (req, res) => {
   res.send(`
@@ -62,6 +64,24 @@ app.get('/signin', (req, res) => {
       </form>
     </div>
   `);
+});
+
+app.post('/signin', async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await usersRepo.getOneBy({ email });
+
+  if (!user) {
+    return res.send('Email not found');
+  }
+
+  if (user.password !== password) {
+    return res.send('Invalid password');
+  }
+
+  req.session.userId = user.id;
+
+  res.send('You are signed in!!!');
 });
 
 app.listen(3000, () => {
