@@ -7,6 +7,6 @@ module.exports = ({ content }) => {
       <body>
         ${content}
       </body>
-    </html>
+    </html
   `;
 };
